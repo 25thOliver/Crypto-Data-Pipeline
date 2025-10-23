@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 from sqlalchemy import create_engine, text
 import pandas as pd
-from sqlalchemy.exec import OperationalError
+from sqlalchemy.exc import OperationalError
 
 # Configuration
 binance_api = os.getenv("BINANCE_API_BASE", "https://api.binance.com")
