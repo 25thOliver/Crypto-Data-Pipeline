@@ -1,18 +1,22 @@
-# --- Base Image ---
+# ---------- Base Image ----------
 FROM python:3.11-slim
 
-# --- Working Directory ---
-WORKDIR /app
-
-# --- Install Dependencies ---
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# --- Copy Scripts ---
-COPY scripts/ ./scripts
-
-# --- Set Environment Variables ---
+# ---------- Environment Setup ----------
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# --- Default Command ---
+# Set working directory inside container
+WORKDIR /app
+
+# ---------- Install dependencies ----------
+# Copy requirement file first to leverage Docker cache
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# ---------- Copy project files ----------
+COPY scripts/ ./scripts/
+COPY .env ./  
+
+# ---------- Set entrypoint ----------
 CMD ["python", "scripts/binance_ingestor.py"]

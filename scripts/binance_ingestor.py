@@ -22,7 +22,7 @@ def main():
                 insert_df(fetch_recent_trades(), "crypto_recent_trades")
                 insert_df(fetch_klines(), "crypto_klines")
 
-                print(f"[{datetime.utcnow()}] Successfully ingested all endpoints.\n {len(df)} records")
+                print(f"[{datetime.utcnow()}] Successfully ingested all endpoints.\n")
                 time.sleep(60)
             except Exception as e:
                 print(f"Error: {e}")

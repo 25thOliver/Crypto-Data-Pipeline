@@ -1,61 +1,16 @@
-# --- Python ---
+# Ignore database/data folders
+data/
+pg_data/
+postgres/
+*.db
+
+# Ignore env files and Python cache
+.env
 __pycache__/
 *.pyc
 *.pyo
-*.pyd
-*.egg-info/
-*.egg
-.venv/
-venv/
-env/
-ENV/
-pip-wheel-metadata/
-dist/
-build/
-.eggs/
 
-# --- VSCode / IDEs ---
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# --- Environment / Secrets ---
-.env
-*.env.*
-.envrc
-
-# --- Docker ---
-data/
-*.pid
-*.log
-*.db
-*.cql
-*.sql~
-.docker/
-docker-compose.override.yml
-
-# --- Logs ---
-logs/
-*.log
-log.txt
-
-# --- OS Files ---
+# Ignore Docker system files
+.git
+.gitignore
 .DS_Store
-Thumbs.db
-
-# --- Jupyter / Notebook (if used later) ---
-.ipynb_checkpoints/
-*.ipynb
-
-# --- Grafana / Cache / Volumes ---
-grafana/provisioning/dashboards/*.bak
-grafana/provisioning/datasources/*.bak
-grafana-storage/
-grafana/data/
-
-# --- Temporary Files ---
-tmp/
-temp/
-.cache/
-__temp__/
