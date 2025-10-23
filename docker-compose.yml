@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_crypto
+    restart: always
+    env_file: .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./init_postgres.sql:/docker-entrypoint-initdb.d/init_postgres.sql
+    networks:
+      - crypto_net
+
+  binance_ingestor:
+    build: .
+    container_name: binance_ingestor
+    depends_on:
+      - postgres
+    env_file: .env
+    volumes:
+      - ./scripts:/app/scripts
+    command: ["python", "/app/scripts/binance_ingestor.py"]
+    networks:
+      - crypto_net
+
+networks:
+  crypto_net:
+    driver: bridge
