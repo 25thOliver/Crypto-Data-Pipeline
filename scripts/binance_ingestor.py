@@ -4,6 +4,7 @@ import requests
 from datetime import datetime
 from sqlalchemy import create_engine, text
 import pandas as pd
+from sqlalchemy.exec import OperationalError
 
 # Configuration
 binance_api = os.getenv("BINANCE_API_BASE", "https://api.binance.com")
@@ -18,12 +19,24 @@ db_port = os.getenv("POSTGRES_PORT", 5432)
 db_url = f"postgresql+psycopg2://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}"
 engine = create_engine(db_url)
 
-table_name = "crypo_prices"
+table_name = "crypto_prices"
+
+def wait_for_db(max_retries=10, delay=5):
+    for attempt in range(max_retries):
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("SELECT 1"))
+            print("Database connection established.")
+            return
+        except OperationalError:
+            print(f"Waiting for database... ({attempt + 1}/{max_retries})")
+            time.sleep(delay)
+    raise Exception("Could not connect to database after several attempts.")
 
 # Ensure table exists else auto-create
 def ensure_table():
     with engine.begin() as conn:
-        conn.execute(text("""
+        conn.execute(text(f"""
             CREATE TABLE IF NOT EXISTS {table_name} (
                 id SERIAL PRIMARY KEY,
                 symbol VARCHAR(20) NOT NULL,
@@ -53,6 +66,7 @@ def insert_prices(df):
 # Main loop
 def main():
     print("Starting Binance Data Ingestor...")
+    wait_for_db()
     ensure_table()
     while True:
         try:
