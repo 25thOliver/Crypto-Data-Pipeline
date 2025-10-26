@@ -135,6 +135,8 @@ services:
         condition: service_healthy
       postgres:
         condition: service_started
+      cassandra:
+        condition: service_started
     ports:
       - "8083:8083"
     environment:
@@ -157,6 +159,21 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./connect-plugins:/connect-plugins
+      - ./connectors:/connectors
+    command: 
+      - bash
+      - -c
+      - |
+        echo "Starting Kafka Connect..."
+        /docker-entrypoint.sh &
+        sleep 20
+        echo "Registering connectors automatically..."
+        for f in /connectors/*.json; do
+          name=$(basename "$f" .json)
+          echo "Registering connector: $name"
+          curl -s -X PUT -H "Content-Type: application/json" --data @"$f" http://localhost:8083/connectors/$name/config
+          done 
+          wait
 
   grafana:
     image: grafana/grafana:latest
