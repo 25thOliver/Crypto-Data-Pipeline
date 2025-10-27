@@ -1,6 +1,6 @@
 # Crypto Data Pipeline
 
-A fully automated real-time cryptocurrency data pipeline that collects market data from Binance, processes it through modern data technologies, and visualizes it in beautiful Grafana dashboards.
+Imagine watching the entire cryptocurrency market update live. Every price tick, every trade, every order,streaming seamlessly from **Binance → PostgreSQL → Kafka → Cassandra → Grafana**. This project turns that vision into reality, combining real-time data engineering, CDC, and beautiful visualizations into a single automated pipeline.
 
 ## What This Project Does
 
@@ -8,9 +8,9 @@ This project automatically collects cryptocurrency market data (prices, trading 
 
 ## What We've Achieved
 
-**Real-Time Data Collection**: Automatically fetches live crypto market data from Binance every 600 seconds  
+**Real-Time Data Collection**: Automatically fetches live crypto market data from Binance every 3600 seconds  
 **Automated Data Pipeline**: Data flows seamlessly from Binance → PostgreSQL → Debezium CDC → Kafka → Cassandra without manual intervention  
-**Change Data Capture (CDC)**: Uses Debezium to automatically detect and stream database changes to downstream systems in real-time  
+**Change Data Capture (CDC)**: Allows this sytem to detect new data in PostgreSQL in realtime without polling. Instead of repeatedly querying the database, Debezium listens to changes directly through PostgreSQL's replication log, ensuring near-zero latency and minimal load.
 **Scalable Architecture**: Built with enterprise-grade technologies (Debezium, Kafka, Cassandra) that can handle millions of records  
 **Beautiful Visualizations**: Ready-to-use Grafana dashboards for monitoring crypto markets  
 
@@ -24,12 +24,14 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
                 ↓                        ↓
           Every INSERT              Stream Changes
 ```
+![Pipeline Architecture](images/architecture.png) 
+*End-to-end pipeline from data ingestion to visualization.*
 
 ### Components Breakdown
 
 1. **Binance Data Collector** (Python)
    - Fetches 5 types of market data: prices, 24hr stats, order books, recent trades, and candlestick data
-   - Writes data to PostgreSQL every 600 seconds
+   - Writes data to PostgreSQL every 3600 seconds
 
 2. **PostgreSQL Database**
    - Primary storage for all crypto market data
@@ -43,14 +45,10 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
    - No impact on database performance
 
 4. **Apache Kafka**
-   - Message queue that handles real-time data streaming
-   - Receives change events from Debezium
-   - Ensures data reliability and scalability
-   - Acts as a buffer between data collection and storage
+   Kafka acts as a real-time buffer between Debezium and Cassandra, ensuring data reliability. If Cassandra goes down, no data is lost. Kafka stores all chnage events until Cassandra comes back online.
 
 5. **Cassandra Sink Connector**
-   - Consumes change events from Kafka topics
-   - Writes data to Apache Cassandra for fast analytical queries
+   The Cassandra Sink Connector (Datastax) continuously listens to Kafka topics and mirrors every change into Cassandra table that match the PostgreSQL schema.
 
 6. **Apache Cassandra**
    - Fast, distributed database optimized for time-series data
@@ -65,13 +63,14 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
 
 | Data Type | Description | Update Frequency |
 |-----------|-------------|------------------|
-| **Prices** | Latest price for all trading pairs | Every 60 seconds |
-| **24hr Stats** | Price changes, volumes, and market movements | Every 60 seconds |
-| **Order Books** | Current buy/sell orders | Every 60 seconds |
-| **Recent Trades** | Latest market transactions | Every 60 seconds |
-| **Candlesticks** | Historical price patterns (OHLCV) | Every 60 seconds |
+| **Prices** | Latest price for all trading pairs | Every 3600 seconds |
+| **24hr Stats** | Price changes, volumes, and market movements | Every 3600 seconds |
+| **Order Books** | Current buy/sell orders | Every 3600 seconds |
+| **Recent Trades** | Latest market transactions | Every 3600 seconds |
+| **Candlesticks** | Historical price patterns (OHLCV) | Every 6000 seconds |
 
 ![Live crypto prices](images/grafana_dashboard.png)
+*Live dashboard displaying top-performing cryptocurrencies by 24h change.*
 
 ## Getting Started
 
@@ -92,6 +91,8 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
    ```bash
    docker compose up --build -d
    ```
+   ![Docker ps](images/docker_ps.png)
+   *Sows container orcherstration success*
 
 3. **View your dashboards**
    - Open `http://localhost:3000` in your browser
@@ -111,7 +112,6 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
 - **[Screenshot 4: Order Book Visualization]** - Live buy/sell order depth
 
 ### Architecture & Data Flow
-![Pipeline Architecture](images/architecture.png) 
 ![Active Topics](images/active_topics.png)
 ![PostgreSQL Sample Data](images/postgres.png)
 ![Cassandra Sample Query](images/cassandra_query.png)
@@ -164,11 +164,16 @@ docker exec cassandra cqlsh -e "SELECT * FROM crypto_keyspace.crypto_prices LIMI
 ```bash
 curl -sS http://localhost:8083/connectors | jq
 ```
+![CDC Status](images/cdc_config.png)
+![CDC Config](images/config_cdc.png)
+*REST response of CDC pipeline configuration*
+
+![crypto_prices topic streams](images/kafka_stream.png)
 
 ## Key Features
 
 **Fully Automated** - Set it and forget it, data collects automatically  
-**Real-Time** - New data every 600 seconds  
+**Real-Time** - New data every 3600 seconds  
 **Rich Visualizations** - Beautiful Grafana dashboards out of the box  
 **Reliable** - Built on proven enterprise technologies  
 **Scalable** - Can handle millions of records effortlessly
@@ -184,7 +189,7 @@ This project demonstrates:
 
 ### How Change Data Capture Works
 
-1. Python script inserts data into PostgreSQL every 6000 seconds
+1. Python script inserts data into PostgreSQL every 3600 seconds
 2. **Debezium connector** watches PostgreSQL for changes using logical replication
 3. When new rows are inserted, Debezium captures them automatically
 4. Changes are converted to JSON messages and sent to Kafka topics
