@@ -1,0 +1,30 @@
+{
+  "name": "postgres-source",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "postgres",
+    "database.port": "5432",
+    "database.user": "crypto_user",
+    "database.password": "crypto_pass",
+    "database.dbname": "crypto_db",
+    "plugin.name": "pgoutput",
+    "slot.name": "debezium_slot_final",
+    "publication.name": "debezium_pub_final",
+  "database.server.name": "crypto",
+    "table.include.list": "public.crypto_prices,public.crypto_24h_stats,public.crypto_order_book,public.crypto_recent_trades,public.crypto_klines",
+
+  "transforms": "unwrap,route",
+  "transforms.unwrap.type": "io.debezium.transforms.ExtractNewRecordState",
+  "transforms.unwrap.drop.tombstones": "false",
+  "transforms.route.type": "org.apache.kafka.connect.transforms.RegexRouter",
+  "transforms.route.regex": "([^.]+)\\.([^.]+)\\.([^.]+)",
+  "transforms.route.replacement": "crypto_$3",
+
+    "tombstones.on.delete": "false",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "true",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "true"
+  }
+}

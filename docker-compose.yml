@@ -155,6 +155,7 @@ services:
     volumes:
       - ./connect-plugins:/connect-plugins
       - ./connectors:/connectors
+      - ./connect-plugins/convert_fetch_time.js:/opt/kafka/connect-scripts/convert_fetch_time.js
     # Let the default entrypoint run, then register connectors
     command: >
       bash -c "
