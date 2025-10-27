@@ -2,19 +2,19 @@
 
 A fully automated real-time cryptocurrency data pipeline that collects market data from Binance, processes it through modern data technologies, and visualizes it in beautiful Grafana dashboards.
 
-## 🎯 What This Project Does
+## What This Project Does
 
-This project automatically collects cryptocurrency market data (prices, trading volumes, order books, and more) from Binance every minute and displays it in real-time dashboards. Think of it as a Bloomberg Terminal, but for cryptocurrencies and fully automated.
+This project automatically collects cryptocurrency market data (prices, trading volumes, order books, and more) from Binance every 10 minute and displays it in real-time dashboards. Think of it as a Bloomberg Terminal, but for cryptocurrencies and fully automated.
 
-## 🏆 What We've Achieved
+## What We've Achieved
 
-✅ **Real-Time Data Collection**: Automatically fetches live crypto market data from Binance every 60 seconds  
-✅ **Automated Data Pipeline**: Data flows seamlessly from Binance → PostgreSQL → Debezium CDC → Kafka → Cassandra without manual intervention  
-✅ **Change Data Capture (CDC)**: Uses Debezium to automatically detect and stream database changes to downstream systems in real-time  
-✅ **Scalable Architecture**: Built with enterprise-grade technologies (Debezium, Kafka, Cassandra) that can handle millions of records  
-✅ **Beautiful Visualizations**: Ready-to-use Grafana dashboards for monitoring crypto markets  
+**Real-Time Data Collection**: Automatically fetches live crypto market data from Binance every 600 seconds  
+**Automated Data Pipeline**: Data flows seamlessly from Binance → PostgreSQL → Debezium CDC → Kafka → Cassandra without manual intervention  
+**Change Data Capture (CDC)**: Uses Debezium to automatically detect and stream database changes to downstream systems in real-time  
+**Scalable Architecture**: Built with enterprise-grade technologies (Debezium, Kafka, Cassandra) that can handle millions of records  
+**Beautiful Visualizations**: Ready-to-use Grafana dashboards for monitoring crypto markets  
 
-## 📊 Architecture Overview
+## Architecture Overview
 
 ```
 Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
@@ -29,7 +29,7 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
 
 1. **Binance Data Collector** (Python)
    - Fetches 5 types of market data: prices, 24hr stats, order books, recent trades, and candlestick data
-   - Writes data to PostgreSQL every 60 seconds
+   - Writes data to PostgreSQL every 600 seconds
 
 2. **PostgreSQL Database**
    - Primary storage for all crypto market data
@@ -61,7 +61,7 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
    - Visual interface for exploring crypto market data
    - Live charts and analytics
 
-## 📈 Data We Collect
+## Data We Collect
 
 | Data Type | Description | Update Frequency |
 |-----------|-------------|------------------|
@@ -71,9 +71,9 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
 | **Recent Trades** | Latest market transactions | Every 60 seconds |
 | **Candlesticks** | Historical price patterns (OHLCV) | Every 60 seconds |
 
-**[Screenshot: Add a dashboard screenshot showing live crypto prices here]**
+![Live crypto prices](images/grafana_dashboard.png)
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Docker and Docker Compose installed on your computer
@@ -98,9 +98,10 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
    - Login: admin / admin
    - Explore the crypto market data!
 
-**[Screenshot: Add a screenshot of Grafana login page]**
+![Home page after](images/home_grafana.png)
 
-## 📸 Project Screenshots
+
+## Project Screenshots
 
 ### Dashboard Visualizations
 *[Add screenshots here showing:]*  
@@ -110,21 +111,21 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
 - **[Screenshot 4: Order Book Visualization]** - Live buy/sell order depth
 
 ### Architecture & Data Flow
-*[Add screenshots here showing:]*  
-- **[Screenshot 5: Pipeline Diagram]** - Visual representation of data flow  
-- **[Screenshot 6: Kafka Topics]** - Active topics showing data streaming  
-- **[Screenshot 7: Database Contents]** - Sample data from PostgreSQL/Cassandra
+![Pipeline Architecture](images/architecture.png) 
+![Active Topics](images/active_topics.png)
+![PostgreSQL Sample Data](images/postgres.png)
+![Cassandra Sample Query](images/cassandra_query.png)
 
-**[Screenshot: Add a screenshot of the main Grafana dashboard with market overview]**
 
-## 🔧 Configuration Files
+
+## Configuration Files
 
 - `docker-compose.yml` - Orchestrates all services
 - `connectors/cassandra-sink.json` - Cassandra data sink configuration
 - `connectors/postgres-source-temp.json` - PostgreSQL change data capture configuration
 - `scripts/binance_ingestor.py` - Main data collection script
 
-## 📊 Current Data Statistics
+## Current Data Statistics
 
 - **Total Records Collected**: Over 1.8 million rows
 - **Active Tables**: 5 (prices, stats, order books, trades, candlesticks)
@@ -132,7 +133,7 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
 - **Data Sources**: Binance REST API
 - **Storage**: PostgreSQL (primary) + Cassandra (analytics)
 
-## 🎨 Grafana Dashboards
+## Grafana Dashboards
 
 Our dashboards provide:
 - **Real-time price monitoring** across all trading pairs
@@ -141,9 +142,8 @@ Our dashboards provide:
 - **Trade history** with buy/sell indicators
 - **Candlestick charts** for technical analysis
 
-**[Screenshot: Add a beautiful dashboard showing price charts and analytics]**
 
-## 🛠️ Troubleshooting
+##  Troubleshooting
 
 ### Check if services are running
 ```bash
@@ -165,15 +165,15 @@ docker exec cassandra cqlsh -e "SELECT * FROM crypto_keyspace.crypto_prices LIMI
 curl -sS http://localhost:8083/connectors | jq
 ```
 
-## 📝 Key Features
+## Key Features
 
-✨ **Fully Automated** - Set it and forget it, data collects automatically  
-⚡ **Real-Time** - New data every 60 seconds  
-📊 **Rich Visualizations** - Beautiful Grafana dashboards out of the box  
-🔒 **Reliable** - Built on proven enterprise technologies  
-📈 **Scalable** - Can handle millions of records effortlessly
+**Fully Automated** - Set it and forget it, data collects automatically  
+**Real-Time** - New data every 600 seconds  
+**Rich Visualizations** - Beautiful Grafana dashboards out of the box  
+**Reliable** - Built on proven enterprise technologies  
+**Scalable** - Can handle millions of records effortlessly
 
-## 🎓 Learn More
+## Learn More
 
 This project demonstrates:
 - **Change Data Capture (CDC)** with Debezium - automatically captures database changes
@@ -184,14 +184,14 @@ This project demonstrates:
 
 ### How Change Data Capture Works
 
-1. Python script inserts data into PostgreSQL every 60 seconds
+1. Python script inserts data into PostgreSQL every 6000 seconds
 2. **Debezium connector** watches PostgreSQL for changes using logical replication
 3. When new rows are inserted, Debezium captures them automatically
 4. Changes are converted to JSON messages and sent to Kafka topics
 5. Cassandra sink connector consumes these messages and writes to Cassandra
 6. Result: **Zero manual intervention** - data flows automatically!
 
-## 📞 Support
+## Support
 
 For questions or issues, please check the logs:
 ```bash
@@ -200,5 +200,3 @@ docker logs debezium-connect
 ```
 
 ---
-
-**Built with ❤️ using:** Python, PostgreSQL, Apache Kafka, Apache Cassandra, Grafana, Docker

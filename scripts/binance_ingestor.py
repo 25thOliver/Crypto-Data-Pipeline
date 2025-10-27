@@ -23,7 +23,7 @@ def main():
                 insert_df(fetch_klines(), "crypto_klines")
 
                 print(f"[{datetime.utcnow()}] Successfully ingested all endpoints.\n")
-                time.sleep(600)
+                time.sleep(6000)
             except Exception as e:
                 print(f"Error: {e}")
                 time.sleep(10)
