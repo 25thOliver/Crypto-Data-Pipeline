@@ -31,6 +31,5 @@ def ensure_table(table_name, schema_sql):
 
 def insert_df(df: pd.DataFrame, table_name: str):
     if not df.empty:
-        df.to_sql(table_name, engine, if_exists="replace", index=False)
+        df.to_sql(table_name, engine, if_exists="append", index=False)
         print(f"Inserted {len(df)} rows into '{table_name}'")
-        
