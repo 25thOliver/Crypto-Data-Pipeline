@@ -4,7 +4,7 @@ schemas = {
             id SERIAL PRIMARY KEY,
             symbol VARCHAR(20),
             price NUMERIC(18,8),
-            fetch_time TIMESTAMP
+            fetch_time BIGINT
         );
     """,
     "crypto_24h_stats": """
@@ -17,7 +17,7 @@ schemas = {
             prevClosePrice NUMERIC(18,8),
             lastPrice NUMERIC(18,8),
             volume NUMERIC(18,8),
-            fetch_time TIMESTAMP
+            fetch_time BIGINT
         );
     """,
     "crypto_order_book": """
@@ -27,7 +27,7 @@ schemas = {
             side VARCHAR(4),
             price NUMERIC(18,8),
             quantity NUMERIC(18,8),
-            fetch_time TIMESTAMP
+            fetch_time BIGINT
         );
     """,
     "crypto_recent_trades": """
@@ -37,7 +37,7 @@ schemas = {
             price NUMERIC(18,8),
             qty NUMERIC(18,8),
             isBuyerMaker BOOLEAN,
-            fetch_time TIMESTAMP
+            fetch_time BIGINT
         );
     """,
     "crypto_klines": """
@@ -51,7 +51,7 @@ schemas = {
             close NUMERIC(18,8),
             volume NUMERIC(18,8),
             num_trades INT,
-            fetch_time TIMESTAMP
+            fetch_time BIGINT
         );
     """,
 }
