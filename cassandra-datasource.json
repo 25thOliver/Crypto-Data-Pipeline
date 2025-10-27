@@ -1,0 +1,23 @@
+{
+  "name": "Cassandra-Crypto",
+  "type": "hadesarchitect-cassandra-datasource",
+  "access": "proxy",
+  "url": "cassandra:9042",
+  "database": "crypto_keyspace",
+  "user": "cassandra",
+  "isDefault": true,
+  "secureJsonData": {
+    "password": "cassandra"
+  },
+  "jsonData": {
+    "consistency": "ONE",
+    "timeout": 30,
+    "allowInsecureSsl": false,
+    "maxOpenConns": 0,
+    "maxIdleConns": 2,
+    "connMaxLifetime": 14400,
+    "keyspace": "crypto_keyspace",
+    "contactPoints": "cassandra:9042",
+    "localDataCenter": "datacenter1"
+  }
+}
