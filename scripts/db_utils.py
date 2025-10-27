@@ -31,5 +31,9 @@ def ensure_table(table_name, schema_sql):
 
 def insert_df(df: pd.DataFrame, table_name: str):
     if not df.empty:
+        # Ensure fetch_time is stored as integer (milliseconds)
+        if 'fetch_time' in df.columns:
+            # Convert to pandas Int64 nullable integer type
+            df['fetch_time'] = df['fetch_time'].astype('int64')
         df.to_sql(table_name, engine, if_exists="append", index=False)
         print(f"Inserted {len(df)} rows into '{table_name}'")
