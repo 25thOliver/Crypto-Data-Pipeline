@@ -152,28 +152,38 @@ services:
       CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
       CONNECT_PLUGIN_PATH: /kafka/connect,/connect-plugins
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
       - ./connect-plugins:/connect-plugins
       - ./connectors:/connectors
-    command: 
-      - bash
-      - -c
-      - |
-        echo "Starting Kafka Connect..."
-        /docker-entrypoint.sh &
-        sleep 20
-        echo "Registering connectors automatically..."
+    # Let the default entrypoint run, then register connectors
+    command: >
+      bash -c "
+        # Start Kafka Connect with default entrypoint
+        /docker-entrypoint.sh start &
+        
+        # Wait for Kafka Connect REST API to become available
+        echo 'Waiting for Kafka Connect to start...';
+        sleep 60;
+        
+        until curl -s http://localhost:8083/connectors > /dev/null; do
+          echo 'Still waiting for Kafka Connect REST API...';
+          sleep 10;
+        done;
+
+        echo 'Kafka Connect is up. Registering connectors...';
         for f in /connectors/*.json; do
-          name=$(basename "$f" .json)
-          echo "Registering connector: $name"
-          curl -s -X PUT -H "Content-Type: application/json" --data @"$f" http://localhost:8083/connectors/$name/config
-          done 
-          wait
+          name=$$(basename \"$$f\" .json);
+          echo \"Registering connector: $$name\";
+          curl -s -X PUT -H 'Content-Type: application/json' --data @\"$$f\" http://localhost:8083/connectors/$$name/config;
+        done;
+
+        # Wait forever (keep container alive)
+        wait
+      "
+
+
+
+
 
   grafana:
     image: grafana/grafana:latest
