@@ -201,6 +201,26 @@ services:
     depends_on:
       - cassandra
     
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "LocalKafka"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka:9092"
+      KAFKA_CLUSTERS_0_ZOOKEEPER: "zookeeper:2181"
+      # Optional: enable schema registry if you use it
+      # KAFKA_CLUSTERS_0_SCHEMAREGISTRY: "http://schema-registry:8081"
+      SERVER_PORT: 8080
+
+
 
 volumes:
   cassandra_data:
