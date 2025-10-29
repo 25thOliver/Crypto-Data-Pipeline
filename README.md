@@ -103,6 +103,19 @@ Binance API → PostgreSQL → Debezium CDC → Kafka → Cassandra → Grafana
 
 ## Project Screenshots
 
+### Kafka UI - Monitoring Topics & Connectors
+![Kafka UI Overview](images/kafka_ui.png)
+![Kafka UI crypto_prices topic](images/kafkaui_crypto_prices.png)
+*Kafka UI providing a real-time view of all Kafka topics, internal connector states, and message traffic.*
+
+The Kafka UI interface offers an intuitive dashboard for monitoring the Kafka ecosystem:
+- **Topics View** – Displays all internal and user-created topics such as `crypto_prices`, `crypto_order_book`, and more.  
+- **Consumers View** – Shows active sink connectors and other consumers reading from Kafka topics (e.g., `cassandra-sink`).  
+- **Cluster Health** – Visualizes broker status, topic replication, and partition metrics.  
+
+This provides a richer, more interactive way to inspect data flow across Kafka.
+
+
 ### Architecture & Data Flow
 ![Active Topics](images/active_topics.png)  
 ![PostgreSQL Sample Data](images/postgres.png)  
